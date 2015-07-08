@@ -969,7 +969,6 @@ public class QueueImpl implements Queue
 
    public synchronized void cancel(final MessageReference reference, final long timeBase) throws Exception
    {
-      deliveringCount.decrementAndGet();
       if (checkRedelivery(reference, timeBase))
       {
          if (!scheduledDeliveryHandler.checkAndSchedule(reference, false))
@@ -979,6 +978,10 @@ public class QueueImpl implements Queue
 
          resetAllIterators();
       }
+	  else
+	  {
+		deliveringCount.decrementAndGet();
+	  }
    }
 
    public void expire(final MessageReference ref) throws Exception

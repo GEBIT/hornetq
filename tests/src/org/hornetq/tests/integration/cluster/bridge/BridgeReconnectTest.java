@@ -30,6 +30,8 @@ import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.api.core.client.ClientSessionFactory;
 import org.hornetq.api.core.client.HornetQClient;
 import org.hornetq.api.core.client.ServerLocator;
+import org.hornetq.api.core.management.QueueControl;
+import org.hornetq.api.core.management.ResourceNames;
 import org.hornetq.core.config.BridgeConfiguration;
 import org.hornetq.core.config.CoreQueueConfiguration;
 import org.hornetq.core.config.impl.ConfigurationImpl;
@@ -41,6 +43,7 @@ import org.hornetq.core.server.HornetQServer;
 import org.hornetq.core.server.NodeManager;
 import org.hornetq.core.server.cluster.Bridge;
 import org.hornetq.core.server.cluster.impl.BridgeImpl;
+import org.hornetq.core.server.management.ManagementService;
 import org.hornetq.spi.core.protocol.RemotingConnection;
 import org.hornetq.tests.integration.cluster.util.InVMNodeManager;
 
@@ -456,6 +459,10 @@ public class BridgeReconnectTest extends BridgeTestBase
          forwardingConnection = getForwardingConnection(bridge);
          forwardingConnection.fail(new HornetQException(HornetQException.NOT_CONNECTED));
 
+		 final ManagementService managementService = server0.getManagementService();
+		 QueueControl coreQueueControl = (QueueControl)managementService.getResource(ResourceNames.CORE_QUEUE + queueName0);
+		 Assert.assertEquals(0, coreQueueControl.getDeliveringCount());
+		 
          final int numMessages = NUM_MESSAGES;
 
          SimpleString propKey = new SimpleString("propkey");
