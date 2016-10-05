@@ -1041,7 +1041,6 @@ public class QueueImpl implements Queue
 
    public synchronized void cancel(final MessageReference reference, final long timeBase) throws Exception
    {
-      deliveringCount.decrementAndGet();
       if (checkRedelivery(reference, timeBase, false))
       {
          if (!scheduledDeliveryHandler.checkAndSchedule(reference, false))
